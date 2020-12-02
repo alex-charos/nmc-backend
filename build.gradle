@@ -1,0 +1,52 @@
+plugins {
+  id 'org.springframework.boot' version '2.3.5.RELEASE'
+  id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+  id 'java'
+}
+
+
+repositories {   // repositories for Jar's you access in your code
+  maven {
+    url 'https://oss.sonatype.org/content/repositories/snapshots' // SNAPSHOT repository (if needed)
+  }
+  mavenCentral()
+  jcenter()
+}
+
+apply plugin: 'java'                              // standard Java tasks
+
+dependencies {
+  implementation 'org.springframework.boot:spring-boot-starter'
+  compile 'com.google.firebase:firebase-admin:7.0.1'
+  compile 'org.springframework.shell:spring-shell-starter:2.0.0.RELEASE'
+  compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-csv', version: '2.9.8'
+  
+
+  compile 'jstl:jstl:1.2'
+
+// Add your dependencies here.
+//  compile 'com.google.cloud:google-cloud:+'   // Latest Cloud API's http://googlecloudplatform.github.io/google-cloud-java
+
+  testCompile 'junit:junit:4.12'
+  testCompile 'com.google.truth:truth:0.33'
+  testCompile 'org.mockito:mockito-all:1.10.19'
+
+}
+
+test {
+  useJUnit()
+  testLogging.showStandardStreams = true
+  beforeTest { descriptor ->
+     logger.lifecycle("test: " + descriptor + "  Running")
+  }
+
+  onOutput { descriptor, event ->
+     logger.lifecycle("test: " + descriptor + ": " + event.message )
+  }
+  afterTest { descriptor, result ->
+    logger.lifecycle("test: " + descriptor + ": " + result )
+  }
+}
+
+group   = "gr.nordicmarina.configurator"        // Generated output GroupId
+version = "1.0-SNAPSHOT"       // Version in generated output
