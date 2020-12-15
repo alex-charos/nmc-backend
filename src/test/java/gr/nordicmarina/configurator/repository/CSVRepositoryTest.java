@@ -36,7 +36,7 @@ public class CSVRepositoryTest {
 		ObjectReader oReader = csvMapper.reader(CSVTuple.class).with(schema);
 		List<CSVTuple> tt = new ArrayList<CSVTuple>();
 		try (Reader reader = new InputStreamReader(
-				this.getClass().getClassLoader().getResourceAsStream("pricingweb.csv"))) {
+				this.getClass().getClassLoader().getResourceAsStream("pricingweb5.csv"))) {
 			MappingIterator<CSVTuple> mi = oReader.readValues(reader);
 			while (mi.hasNext()) {
 				CSVTuple n = (mi.next());
@@ -49,9 +49,9 @@ public class CSVRepositoryTest {
 		
 		boats.stream().forEach(System.out::println);
 		
-BoatRepository repo = new FirebaseBoatRepository(new FirebaseConfiguration().fireStore("firebase.json"));
+	BoatRepository repo = new FirebaseBoatRepository(new FirebaseConfiguration().fireStore("firebase.json"));
 		
-		repo.deleteAll();
+repo.deleteAll();
 		
 		boats.stream().forEach(repo::add);
 		
@@ -60,16 +60,17 @@ BoatRepository repo = new FirebaseBoatRepository(new FirebaseConfiguration().fir
 	}
 
 	private List<Boat> parse(List<CSVTuple> tuples) {
-		List<Boat> boats = tuples.stream().filter(p -> "Boat".equals(p.getType())).map(arg0 -> {
+		List<Boat> boats = tuples.stream().map(arg0 -> {
 			try {
 				return arg0.toBoat();
-			} catch (ParseException e) {
-				e.printStackTrace();
+			} catch (ParseException e1) {
+				e1.printStackTrace();
 				return null;
 			}
-		}).collect(Collectors.toList());
-		
-		tuples.stream().filter(p -> !"Boat".equals(p.getType())).forEach(p-> {
+		}).distinct().collect(Collectors.toList());
+
+		 
+		tuples.stream().forEach(p-> {
 			Boat b = getBoat(p.getBoatModel(), boats);
 			try {
 				b.getEquipment().add(p.toEquipment());
