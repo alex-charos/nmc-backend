@@ -21,9 +21,6 @@ public class CSVTuple {
 	@JsonProperty("Type")
 	private String type;
 
-	@JsonProperty("Internal Ref")
-	private String internalRef;
-
 	@JsonProperty("Description English")
 	private String descriptionEn;
 
@@ -50,14 +47,6 @@ public class CSVTuple {
 
 	public void setType(String type) {
 		this.type = type;
-	}
-
-	public String getInternalRef() {
-		return internalRef;
-	}
-
-	public void setInternalRef(String internalRef) {
-		this.internalRef = internalRef;
 	}
 
 	public String getDescriptionEn() {
@@ -94,18 +83,13 @@ public class CSVTuple {
 
 	@Override
 	public String toString() {
-		return "CSVTuple [boatModel=" + boatModel + ", type=" + type + ", internalRef=" + internalRef
-				+ ", descriptionEn=" + descriptionEn + ", descriptionEl=" + descriptionEl + ", priceExVat=" + priceExVat
-				+ ", priceWithVat=" + priceWithVat + "]";
+		return "CSVTuple [boatModel=" + boatModel + ", type=" + type + ", descriptionEn=" + descriptionEn
+				+ ", descriptionEl=" + descriptionEl + ", priceExVat=" + priceExVat + ", priceWithVat=" + priceWithVat
+				+ "]";
 	}
 
 	public Boat toBoat() throws ParseException {
-		Integer d = Integer.parseInt(
-				priceExVat.trim().substring(0, priceExVat.trim().indexOf(",") + 3).replace(",", "").replace(".", ""));
-		Integer d2 = Integer.parseInt(priceWithVat.trim().substring(0, priceWithVat.trim().indexOf(",") + 3)
-				.replace(",", "").replace(".", ""));
-
-		return new Boat(null, boatModel, (d).intValue(), d2.intValue(), new ArrayList<Equipment>());
+		return new Boat(null, boatModel, new ArrayList<Equipment>());
 	}
 
 	public Equipment toEquipment() throws ParseException {
@@ -114,43 +98,25 @@ public class CSVTuple {
 		Integer d2 = Integer.valueOf(0);
 
 		if (priceExVat != null && priceExVat.length() > 0) {
-			if (priceExVat.trim().charAt(0) == '-') {
-				
-				priceExVat = priceExVat.trim().substring(1);
-				if (priceExVat != null && priceExVat.length() > 0) {
-				d = Integer.parseInt(priceExVat.trim().substring(0, priceExVat.trim().indexOf(",") + 3).replace(",", "")
-						.replace(".", ""));
-				d = d *-1;
-				}
-				
-			} else {
-				d = Integer.parseInt(priceExVat.trim().substring(0, priceExVat.trim().indexOf(",") + 3).replace(",", "")
-						.replace(".", ""));
-				
+			try {
+				d = NumberFormat.getInstance(Locale.FRANCE).parse(priceExVat).intValue() * 100;
+			} catch (Exception ex) {
+				System.err.println("Could not parse: " + priceExVat);
+				ex.printStackTrace();
 			}
 
 		}
 
 		if (priceWithVat != null && priceWithVat.length() > 0) {
-			
-			if (priceWithVat.trim().charAt(0) == '-') {
-				priceWithVat = priceWithVat.trim().substring(1);
-				if (priceWithVat != null && priceWithVat.length() > 0) {
-				d2 = Integer.parseInt(priceWithVat.trim().substring(0, priceWithVat.trim().indexOf(",") + 3).replace(",", "")
-						.replace(".", ""));
-				d2 = d2 *-1;
-				}
-				
-			} else {
-				d2 = Integer.parseInt(priceWithVat.trim().substring(0, priceWithVat.trim().indexOf(",") + 3).replace(",", "")
-						.replace(".", ""));
-				
+			try {
+				d2 = NumberFormat.getInstance(Locale.FRANCE).parse(priceWithVat).intValue() * 100;
+			} catch (Exception ex) {
+				System.err.println("Could not parse: " + priceWithVat);
+				ex.printStackTrace();
 			}
-
-
 		}
 
-		return new Equipment(type, internalRef, descriptionEn, descriptionEl, d, d2);
+		return new Equipment(type, descriptionEn, descriptionEl, d, d2);
 	}
 
 }

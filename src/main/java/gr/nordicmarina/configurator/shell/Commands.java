@@ -34,8 +34,8 @@ public class Commands {
 	public void add(@ShellOption(help = "Boat's model") String model,
 			@ShellOption(help = "Models price (exclvat) (IN CENTS!)") int priceInCentsExvat, 
 		@ShellOption(help = "Models price (incvat) (IN CENTS!)") int priceInCentsIncvat) {
-		Equipment eq1 = new Equipment("test", "123", "test", "test", 123, 12354);
-		boatRepository.add(new Boat(null, model, priceInCentsExvat,priceInCentsIncvat, Arrays.asList(eq1)));
+		Equipment eq1 = new Equipment("test", "test", "test", 123, 12354);
+		boatRepository.add(new Boat(null, model, Arrays.asList(eq1)));
 	}
 
 }
