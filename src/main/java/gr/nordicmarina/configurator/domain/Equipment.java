@@ -111,7 +111,7 @@ public class Equipment {
 			List<String> split = Arrays.asList(desc.split("\r\n"));
 			String descr  = split.get(0);
 			List<String> dets = new ArrayList<>();
-			List<String> ss = split.subList(1, split.size()-1);
+			List<String> ss = split.subList(1, split.size());
 			for (String s : ss) {
 				s = s.trim();
 				if (s.startsWith("-")) {
@@ -121,7 +121,7 @@ public class Equipment {
 			}
 			descr = descr.trim();
 			if (descr.endsWith(":")) {
-				descr = descr.substring(0, descr.length()-2).trim();
+				descr = descr.substring(0, descr.length()-1).trim();
 			}
 			d = new DescriptionAndDetails(descr, dets);
 		}
